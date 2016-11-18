@@ -1,7 +1,7 @@
 import React from 'react';
 
 class SampleComponent extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.state = {likesCount: 0}
