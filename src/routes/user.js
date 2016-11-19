@@ -34,7 +34,7 @@ userRoute.post('/login', function(req, res) {
         if (isMatch && !err) {
           var token = createToken(user);
           res.cookie('jwt', token, config.cookieOpts);
-          res.status(200).send({success: true, message: "Success"});
+          res.status(200).send({success: true, token: token});
         } else {
           res.json({success: false, message: "Password doesn't match"});
         }
@@ -64,7 +64,7 @@ userRoute.post('/create', function(req, res) {
       };
       var token = createToken(newUser);
       res.cookie('jwt', token, config.cookieOpts);
-      res.status(200).send({success: true, message: "Success"});
+      res.status(200).send({success: true, token: token});
       console.log("User " + newUser.username + " saved");
     });
   }

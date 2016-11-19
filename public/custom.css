@@ -16,3 +16,7 @@
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+.form > .alert-danger {
+  margin-bottom: 5px;
+}

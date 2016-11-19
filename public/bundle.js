@@ -99,9 +99,10 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
 	    _this.state = {
+	      token: null,
 	      loggedIn: false
 	    };
-	    //this.login = this.login.bind(this);
+	    _this.login = _this.login.bind(_this);
 	    return _this;
 	  }
 
@@ -110,20 +111,23 @@
 	    value: function componentDidMount() {
 	      var token = _reactCookie2.default.load('jwt');
 	      this.setState({
+	        token: token,
 	        loggedIn: token ? true : false
 	      });
-	      console.log(token);
 	    }
-
-	    // login() {
-	    //   this.setState({loggedIn: true});
-	    //   console.log("login");
-	    // }
-	    // login={() => this.login()}
-
+	  }, {
+	    key: 'login',
+	    value: function login(token) {
+	      this.setState({
+	        token: token,
+	        loggedIn: true
+	      });
+	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this2 = this;
+
 	      return _react2.default.createElement(
 	        'div',
 	        null,
@@ -132,8 +136,12 @@
 	          _reactRouter.Router,
 	          { history: _reactRouter.browserHistory },
 	          _react2.default.createElement(_reactRouter.Route, { path: '/', component: _Home2.default }),
-	          _react2.default.createElement(_reactRouter.Route, { path: '/login', component: _Login2.default }),
-	          _react2.default.createElement(_reactRouter.Route, { path: '/register', component: _Register2.default })
+	          _react2.default.createElement(_reactRouter.Route, { path: '/login', component: function component() {
+	              return _react2.default.createElement(_Login2.default, { login: _this2.login });
+	            } }),
+	          _react2.default.createElement(_reactRouter.Route, { path: '/register', component: function component() {
+	              return _react2.default.createElement(_Register2.default, { login: _this2.login });
+	            } })
 	        ),
 	        _react2.default.createElement(_Footer2.default, null)
 	      );
@@ -26939,6 +26947,7 @@
 	      var password = event.target.password.value;
 	      _axios2.default.post('/api/user/login', { username: username, password: password }).then(function (response) {
 	        if (response.data.success) {
+	          _this2.props.login(response.data.token);
 	          _reactRouter.browserHistory.push('/');
 	        } else {
 	          _this2.setState({ message: response.data.message });
@@ -26959,18 +26968,18 @@
 	            { className: 'form', onSubmit: this.handleLogin },
 	            this.state.message ? _react2.default.createElement(
 	              'div',
-	              null,
+	              { className: 'alert-danger' },
 	              this.state.message
 	            ) : '',
 	            _react2.default.createElement(
 	              'label',
-	              { 'for': 'username', className: 'sr-only' },
+	              { htmlFor: 'username', className: 'sr-only' },
 	              'Username'
 	            ),
-	            _react2.default.createElement('input', { type: 'text', id: 'username', className: 'form-control', placeholder: 'Username', required: true, autofocus: true }),
+	            _react2.default.createElement('input', { type: 'text', id: 'username', className: 'form-control', placeholder: 'Username', required: true }),
 	            _react2.default.createElement(
 	              'label',
-	              { 'for': 'password', className: 'sr-only' },
+	              { htmlFor: 'password', className: 'sr-only' },
 	              'Password'
 	            ),
 	            _react2.default.createElement('input', { type: 'password', id: 'password', className: 'form-control', placeholder: 'Password', required: true }),
@@ -28523,22 +28532,23 @@
 	      event.preventDefault();
 	      var username = event.target.username.value;
 	      var password = event.target.inputPassword.value;
-	      if (password !== event.target.confirmPassword.value) {
+	      if (password !== event.target.confirmPassword.value || password === '') {
 	        this.setState({ message: 'Passwords don\'t match' });
 	        event.target.inputPassword.value = '';
 	        event.target.confirmPassword.value = '';
+	      } else {
+	        _axios2.default.post('/api/user/create', { username: username, password: password }).then(function (response) {
+	          if (response.data.success) {
+	            _this2.props.login(response.data.token);
+	            _reactRouter.browserHistory.push('/');
+	          } else {
+	            _this2.setState({ message: response.data.message });
+	          }
+	        });
+	        event.target.username.value = '';
+	        event.target.inputPassword.value = '';
+	        event.target.confirmPassword.value = '';
 	      }
-	      _axios2.default.post('/api/user/create', { username: username, password: password }).then(function (response) {
-	        if (response.data.success) {
-	          _reactRouter.browserHistory.push('/');
-	          return;
-	        } else {
-	          _this2.setState({ message: response.data.message });
-	        }
-	      });
-	      event.target.username.value = '';
-	      event.target.inputPassword.value = '';
-	      event.target.confirmPassword.value = '';
 	    }
 	  }, {
 	    key: 'render',
@@ -28554,7 +28564,7 @@
 	            { className: 'form', onSubmit: this.handleRegistration },
 	            this.state.message ? _react2.default.createElement(
 	              'div',
-	              null,
+	              { className: 'alert-danger' },
 	              this.state.message
 	            ) : '',
 	            _react2.default.createElement(
@@ -28562,7 +28572,7 @@
 	              { htmlFor: 'username' },
 	              'Username:'
 	            ),
-	            _react2.default.createElement('input', { type: 'text', id: 'username', className: 'form-control', placeholder: 'Username', required: true, autofocus: true }),
+	            _react2.default.createElement('input', { type: 'text', id: 'username', className: 'form-control', placeholder: 'Username', required: true }),
 	            _react2.default.createElement(
 	              'label',
 	              { htmlFor: 'inputPassword' },

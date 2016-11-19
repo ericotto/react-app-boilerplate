@@ -16,25 +16,26 @@ class Register extends React.Component {
     event.preventDefault();
     var username = event.target.username.value;
     var password = event.target.inputPassword.value;
-    if (password !== event.target.confirmPassword.value) {
+    if (password !== event.target.confirmPassword.value || password === '') {
       this.setState({message: 'Passwords don\'t match'});
       event.target.inputPassword.value = '';
       event.target.confirmPassword.value = '';
+    } else {
+      axios.post(
+        '/api/user/create',
+        { username: username, password: password },
+      ).then( response => {
+        if (response.data.success) {
+          this.props.login(response.data.token);
+          browserHistory.push('/');
+        } else {
+          this.setState({message: response.data.message });
+        }
+      });
+      event.target.username.value = '';
+      event.target.inputPassword.value = '';
+      event.target.confirmPassword.value = '';
     }
-    axios.post(
-      '/api/user/create',
-      { username: username, password: password },
-    ).then( response => {
-      if (response.data.success) {
-        browserHistory.push('/');
-        return;
-      } else {
-        this.setState({message: response.data.message });
-      }
-    });
-    event.target.username.value = '';
-    event.target.inputPassword.value = '';
-    event.target.confirmPassword.value = '';
   }
 
   render() {
@@ -42,9 +43,9 @@ class Register extends React.Component {
       <div className="container">
         <div className="row col-md-offset-4 col-md-4">
         <form className="form" onSubmit={this.handleRegistration}>
-          { this.state.message ? <div>{this.state.message}</div> : '' }
+          { this.state.message ? <div className="alert-danger">{this.state.message}</div> : '' }
           <label htmlFor="username">Username:</label>
-          <input type="text" id="username" className="form-control" placeholder="Username" required autofocus></input>
+          <input type="text" id="username" className="form-control" placeholder="Username" required></input>
           <label htmlFor="inputPassword">Password:</label>
           <input type="password" id="inputPassword" className="form-control" placeholder="Password" required></input>
           <label htmlFor="confirmPassword">Confirm Password:</label>

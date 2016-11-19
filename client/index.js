@@ -14,24 +14,26 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      token: null,
       loggedIn: false
     };
-    //this.login = this.login.bind(this);
+    this.login = this.login.bind(this);
   }
 
   componentDidMount() {
     var token = cookie.load('jwt');
     this.setState({
+      token: token,
       loggedIn: token ? true : false
     });
-    console.log(token);
   }
 
-  // login() {
-  //   this.setState({loggedIn: true});
-  //   console.log("login");
-  // }
-  // login={() => this.login()}
+  login(token) {
+    this.setState({
+      token: token,
+      loggedIn: true
+    });
+  }
 
   render() {
     return (
@@ -39,8 +41,8 @@ class App extends React.Component {
         <Header />
         <Router history={browserHistory}>
           <Route path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register}/>
+          <Route path="/login" component={() => (<Login login={this.login} />)}/>
+          <Route path="/register" component={() => (<Register login={this.login} />)}/>
         </Router>
         <Footer />
       </div>
