@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 var config = require('./config');
 var api = require('./src/routes/api.js');
 var passport = require('passport');
+var cookieParser = require('cookie-parser');
 
 
 // server config
@@ -17,8 +18,7 @@ var PORT = process.env.PORT || 8080;
 mongoose.connect(config.database);
 app.use(passport.initialize());
 require('./src/auth/passport')(passport);
-
-// url params
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
