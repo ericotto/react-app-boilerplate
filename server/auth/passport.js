@@ -17,7 +17,7 @@ module.exports = function(passport) {
   }
 
   var opts = {
-    jwtFromRequest: cookieExtractor,
+    jwtFromRequest: cookieExtractor || fromHeader('jwt'),
     secretOrKey: config.secret
   }
 

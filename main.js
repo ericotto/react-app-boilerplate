@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var config = require('./config');
-var api = require('./src/routes/api.js');
+var api = require('./server/routes/api.js');
 var passport = require('passport');
 var cookieParser = require('cookie-parser');
 
@@ -17,7 +17,7 @@ var cookieParser = require('cookie-parser');
 var PORT = process.env.PORT || 8080;
 mongoose.connect(config.database);
 app.use(passport.initialize());
-require('./src/auth/passport')(passport);
+require('./server/auth/passport')(passport);
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

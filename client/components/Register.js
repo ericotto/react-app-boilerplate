@@ -1,56 +1,33 @@
 import React from 'react';
-import axios from 'axios';
-import { browserHistory } from 'react-router';
+import { connect } from 'react-redux';
+import { register } from '../actions/actionCreators';
 
 class Register extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      message: ''
-    },
-    this.handleRegistration = this.handleRegistration.bind(this);
-  }
 
   handleRegistration(event) {
     event.preventDefault();
     var username = event.target.username.value;
     var password = event.target.inputPassword.value;
-    if (password !== event.target.confirmPassword.value || password === '') {
-      this.setState({message: 'Passwords don\'t match'});
-      event.target.inputPassword.value = '';
-      event.target.confirmPassword.value = '';
-    } else {
-      axios.post(
-        '/api/user/create',
-        { username: username, password: password },
-      ).then( response => {
-        if (response.data.success) {
-          this.props.login(response.data.token);
-          browserHistory.push('/');
-        } else {
-          this.setState({message: response.data.message });
-        }
-      });
-      event.target.username.value = '';
-      event.target.inputPassword.value = '';
-      event.target.confirmPassword.value = '';
-    }
+    var confirmPassword = event.target.confirmPassword.value;
+    this.props.register(username, password, confirmPassword);
+    event.target.username.value = '';
+    event.target.inputPassword.value = '';
+    event.target.confirmPassword.value = '';
   }
 
   render() {
     return (
       <div className="container">
         <div className="row col-md-offset-4 col-md-4">
-        <form className="form" onSubmit={this.handleRegistration}>
-          { this.state.message ? <div className="alert-danger">{this.state.message}</div> : '' }
+        <form className="form" onSubmit={this.handleRegistration.bind(this)}>
+          { this.props.registerMessage ? <div className="alert-danger">{this.props.registerMessage}</div> : '' }
           <label htmlFor="username">Username:</label>
           <input type="text" id="username" className="form-control" placeholder="Username" required></input>
           <label htmlFor="inputPassword">Password:</label>
           <input type="password" id="inputPassword" className="form-control" placeholder="Password" required></input>
           <label htmlFor="confirmPassword">Confirm Password:</label>
           <input type="password" id="confirmPassword" className="form-control" placeholder="Password" required></input>
-          <button className="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+          <button className="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
         </form>
         </div>
       </div>
@@ -58,5 +35,10 @@ class Register extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    registerMessage: state.user.registerMessage
+  }
+}
 
-export default Register;
+export default connect(mapStateToProps, { register })(Register);

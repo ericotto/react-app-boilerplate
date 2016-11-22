@@ -1,6 +1,22 @@
 import React from 'react';
+import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 class Header extends React.Component {
+
+  renderLinks() {
+    if (!this.props.loggedIn) {
+      return [
+        <li><Link to="/login">Login</Link></li>,
+        <li><Link to="/register">Sign Up</Link></li>
+      ]
+    } else {
+      return [
+        <li><Link to="/dashboard">Dashboard</Link></li>,
+        <li><Link to="/logout">Logout</Link></li>
+      ]
+    }
+  }
 
   render() {
     return (
@@ -14,12 +30,11 @@ class Header extends React.Component {
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>
             </button>
-            <a className="navbar-brand" href="/">Untitled Site</a>
+            <Link to="/" className="navbar-brand">Untitled Site</Link>
           </div>
           <div className="collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
             <ul className="nav navbar-nav">
-              <li><a href="/login">Login</a></li>
-              <li><a href="/register">Register</a></li>
+              { this.renderLinks() }
             </ul>
           </div>
         </div>
@@ -29,4 +44,8 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+function mapStateToProps(state) {
+  return { loggedIn: state.user.loggedIn }
+}
+
+export default connect(mapStateToProps)(Header);

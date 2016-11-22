@@ -1,11 +1,13 @@
 import React from 'react';
 
-class Home extends React.Component {
+import Header from './Header';
 
+class Home extends React.Component {
   render() {
     return (
       <div>
-        Home
+        <Header />
+        {React.cloneElement({...this.props}.children, {...this.props})}
       </div>
     )
   }

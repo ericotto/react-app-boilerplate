@@ -1,53 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-import cookie from 'react-cookie';
+import { Provider } from 'react-redux';
+import store, { history } from './store';
 
-import Header from './components/Header';
-import Home from './components/Home';
+import App from './components/App'
+import Main from './components/Main';
 import Login from './components/Login';
 import Register from './components/Register';
+import Auth from './components/Auth';
+import Logout from './components/Logout';
+import Dashboard from './components/Dashboard';
 import Footer from './components/Footer';
 
-class App extends React.Component {
+const router = (
+  <Provider store={store}>
+    <Router history={history}>
+      <Route path="/" component={App}>
+        <IndexRoute component={Main} />
+          <Route path="/login" component={Login}/>
+          <Route path="/register" component={Register}/>
+          <Route path="/dashboard" component={Auth(Dashboard)}/>
+          <Route path="/logout" component={Auth(Logout)}/>
+      </Route>
+    </Router>
+  </Provider>
+)
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      token: null,
-      loggedIn: false
-    };
-    this.login = this.login.bind(this);
-  }
-
-  componentDidMount() {
-    var token = cookie.load('jwt');
-    this.setState({
-      token: token,
-      loggedIn: token ? true : false
-    });
-  }
-
-  login(token) {
-    this.setState({
-      token: token,
-      loggedIn: true
-    });
-  }
-
-  render() {
-    return (
-      <div>
-        <Header />
-        <Router history={browserHistory}>
-          <Route path="/" component={Home} />
-          <Route path="/login" component={() => (<Login login={this.login} />)}/>
-          <Route path="/register" component={() => (<Register login={this.login} />)}/>
-        </Router>
-        <Footer />
-      </div>
-    )
-  }
-}
-
-ReactDOM.render(<App/>, document.getElementById('app'));
+ReactDOM.render(router, document.getElementById('app'));
