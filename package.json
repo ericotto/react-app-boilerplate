@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start:prod": "webpack -p && node main.js",
-    "server:dev": "nodemon main.js",
-    "client:dev": "webpack -d --watch"
+    "production": "webpack -p && node main.js",
+    "devServer": "nodemon main.js",
+    "devClient": "webpack -d --watch"
   },
   "author": "Eric Otto",
   "license": "ISC",

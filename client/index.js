@@ -5,13 +5,13 @@ import { Provider } from 'react-redux';
 import store, { history } from './store';
 
 import App from './components/App'
-import Main from './components/Main';
-import Login from './components/Login';
-import Register from './components/Register';
-import Auth from './components/Auth';
-import Logout from './components/Logout';
-import Dashboard from './components/Dashboard';
-import Footer from './components/Footer';
+import Main from './components/pages/Main';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import Auth from './components/auth/Auth';
+import Logout from './components/auth/Logout';
+import Dashboard from './components/pages/Dashboard';
+import Footer from './components/utils/Footer';
 
 const router = (
   <Provider store={store}>

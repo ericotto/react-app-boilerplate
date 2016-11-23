@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { logout } from '../actions/actionCreators';
+import { logout } from '../../actions/actionCreators';
 
 class Logout extends React.Component {
   componentWillMount() {
